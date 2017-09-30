@@ -44,8 +44,7 @@ public class KMeansMapper extends Mapper<LongWritable, Text, IntWritable, MyWrit
       
     /** 
      * 计算当前行到聚类中心向量中距离最小的下标； 
-     * @param string 
-     * @return 
+
      */  
     private int getCenterId(String line) {  
         int type=-1;  
@@ -62,8 +61,8 @@ public class KMeansMapper extends Mapper<LongWritable, Text, IntWritable, MyWrit
         }  
   
 }  
-    其中计算两条数据之间的欧式距离如下：
-[java] view plain copy
+
+//计算欧式距离
 public static double calDistance(String line, String string,String splitter) {  
     double sum=0;  
     String[] data=line.split(splitter);  
@@ -74,18 +73,8 @@ public static double calDistance(String line, String string,String splitter) {
     return Math.sqrt(sum);  
 }  
 
-//距离计算
-public static double calDistance(String line, String string,String splitter) {  
-    double sum=0;  
-    String[] data=line.split(splitter);  
-    String[] centerI=string.split(splitter);  
-    for(int i=0;i<data.length;i++){  
-        sum+=Math.pow(Double.parseDouble(data[i])-Double.parseDouble(centerI[i]), 2);  
-    }  
-    return Math.sqrt(sum);  
-} 
 
-//
+
 public class MyWritable implements Writable {  
       
     private int num = 1;  
@@ -138,14 +127,7 @@ public class KmeansCombiner extends Reducer<IntWritable, MyWritable, IntWritable
         splitter = context.getConfiguration().get(SPLITTER);  
         pattern = Pattern.compile(",");  
     }  
-    /*** 
-     * map1 -> (0,"1.1,1.2,1.3"),(0,"1.3,1.2,1.4"),(1,"4.6,5.7,8.8") 
-     * combiner1 -> (0,"2.4,2.4,2.7") , (1,"4.6,5.7,8.8") 
-     * map2 -> (0,"2.1,2.4,1.2"),(2,"12.1,11.1,13.2"),(2,"14.1,12.3,15.2") 
-     * combiner2 ->(0,"2.1,2.4,1.2"),(2,"26.2,23.4,28.4") 
-     * 因此 combiner传值给reducer的时候需要传递当前类别的个数 
-     *  
-     */  
+
     MyWritable result = new MyWritable();  
     @Override  
     protected void reduce(IntWritable key, Iterable<MyWritable> values,  
